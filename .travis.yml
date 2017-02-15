@@ -5,6 +5,6 @@ install: python3 -m pip install -r requirements.txt
 env:
     - CONFIG_PATH=fight_simulator.config.TravisConfig
 before_script:
-    - psql -c 'create database "fight_simulator_test";' -U postgres
+    - psql -c 'create database "tuneful-test";' -U postgres
 script:
     nosetests tests
