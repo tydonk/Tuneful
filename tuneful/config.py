@@ -7,3 +7,8 @@ class TestingConfig(object):
     DATABASE_URI = "postgresql://localhost:5432/tuneful-test"
     DEBUG = True
     UPLOAD_FOLDER = "test-uploads"
+
+class TravisConfig(object):
+    SQLALCHEMY_DATABASE_URI = "postgresql://localhost:5432/tuneful-test"
+    DEBUG = True
+    UPLOAD_FOLDER = "test-uploads"
