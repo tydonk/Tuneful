@@ -34,7 +34,7 @@ def get_songs():
     data = json.dumps([song.as_dict() for song in songs])
     return Response(data, 200, mimetype="application/json")
 
-@app.route("/api/songs/<int:id>", methods=["GET"])
+@app.route("/api/songs/<int:id>", methods=["GET", "DELETE"])
 @decorators.accept("application/json")
 def get_song(id):
     """ Return a single song """
@@ -47,10 +47,26 @@ def get_song(id):
         message = "Could not find song with id {}".format(id)
         data = json.dumps({"message": message})
         return Response(data, 404, mimetype="application/json")
+    if request.method == "GET":
+        # Return the song as JSON
+        data = json.dumps(song.as_dict())
+        return Response(data, 200, mimetype="application/json")
 
-    # Return the song as JSON
-    data = json.dumps(song.as_dict())
-    return Response(data, 200, mimetype="application/json")
+    if request.method == "DELETE":
+        session.delete(song)
+        session.commit()
+
+        message = "Deleted song {}".format(id)
+        data = json.dumps({"message": message})
+        return Response(data, 200, mimetype="application/json")
+
+@app.route("/api/songs/<int:id>", methods=["DELETE"])
+@decorators.accept("application/json")
+def delete_song(id):
+    # Get song from the database
+    song = session.query(models.Song).get(id)
+
+    # Check
 
 @app.route("/api/songs", methods=["POST"])
 @decorators.accept("application/json")
