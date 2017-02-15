@@ -75,6 +75,33 @@ class TestAPI(unittest.TestCase):
                                          'path': '/uploads/test2.mp3'
                                         })
 
+    def test_delete_song(self):
+        """ Deleting a song """
+        fileA = models.File(name="test1.mp3")
+        fileB = models.File(name="test2.mp3")
+
+        songA = models.Song(file=fileA)
+        songB = models.Song(file=fileB)
+
+        session.add_all([fileA, fileB, songA, songB])
+        session.commit()
+
+        response = self.client.delete("/api/songs/{}".format(songB.id),
+            headers=[("Accept", "application/json")]
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "application/json")
+
+        data = json.loads(response.data.decode("ascii"))
+        self.assertEqual(data["message"], "Deleted song 2")
+
+        songs = session.query(models.Song).all()
+        files = session.query(models.File).all()
+
+        self.assertEqual(len(songs), 1)
+        self.assertEqual(len(files), 2)
+
     def test_post_song(self):
         """ Adding a new song """
         fileA = models.File(name="test-feb14.mp3")
