@@ -23,13 +23,14 @@ class File(Base):
     __tablename__ = "files"
 
     id = Column(Integer, primary_key=True)
-    filename = Column(String(1024))
+    name = Column(String(1024))
     song_id = Column(Integer, ForeignKey('songs.id'))
 
     def as_dict(self):
         return {
             "id": self.id,
-            "name": self.filename
+            "name": self.name,
+            "path": url_for("uploaded_file", filename=self.name)
         }
 
 Base.metadata.create_all(engine)
